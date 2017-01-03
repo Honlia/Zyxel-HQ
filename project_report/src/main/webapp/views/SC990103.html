@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!--[if lt IE 9]>
+        <script type="text/javascript" src="js/html5.js"></script>
+        <![endif]-->
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1"/>
+    <meta http-equiv="pragma" content="no-cache" />  
+    <meta http-equiv="cache-control" content="no-cache, must-revalidate" />  
+    <meta http-equiv="expires" content="0" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title></title>
+    <script type="text/javascript" src="js/jquery.min.js" th:src="@{/js/jquery.min.js}"></script>
+    <script type="text/javascript" src="js/main.js" th:src="@{/js/main.js}"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="css/bootstrap-theme.min.css" th:href="@{/css/bootstrap-theme.min.css}"/>
+    <script src="js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+    <link href="css/jquery-confirm.min.css" th:href="@{/css/jquery-confirm.min.css}" rel="stylesheet" type="text/css"/>
+    <script src="js/jquery-confirm.min.js" th:src="@{/js/jquery-confirm.min.js}" type="text/javascript"></script>
+    <!--plugin-->
+    <link rel="stylesheet" href="assets/owlcarousel/assets/owl.carousel.min.css" th:href="@{/assets/owlcarousel/assets/owl.carousel.min.css}"/>
+    <link rel="stylesheet" href="assets/owlcarousel/assets/owl.theme.default.min.css" th:href="@{/assets/owlcarousel/assets/owl.theme.default.min.css}"/>
+    <script src="assets/owlcarousel/owl.carousel.js" th:src="@{/assets/owlcarousel/owl.carousel.js}"></script>
+    <link rel='stylesheet' media='only screen and  (max-width: 900px)' href='css/mobile.css'  th:href="@{/css/mobile.css}"/>
+    <script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+        $(document).ready(function () {
+        	
+            $(".new_account").click(function(){
+            	$("#edit_id").val("");
+                $("#edit_username").val("");
+                $("#edit_password").val("");
+                $("#edit_state").val("");
+                $("#edit_email").html("");
+                $("#edit_logonCount").val("");
+             	// 清空角色下拉列表所有选中状态
+                $("select option").each(function(){
+                	$(this).removeAttr("selected");
+                });
+            	$("#new-account").modal("show");
+            });
+            
+            $(".edit_account").click(function(){
+            	var index = $(this).attr("id");
+            	index = index.replace("editAccount_", "");
+                $("#edit_id").val($("#id_"+index).val());
+                $("#edit_username").val($("#username_"+index).val());
+                $("#edit_password").val($("#password_"+index).val());
+                $("#edit_dept").val($("#dept_"+index).val());
+                $("#edit_position").val($("#position_"+index).val());
+                $("#edit_state").val($("#state_"+index).val());
+                $("#edit_email").html($("#email_"+index).val());
+                $("#edit_logonCount").val($("#logonCount_"+index).val());
+                
+                // 清空角色下拉列表所有选中状态
+                $("#rolesSelect option").each(function(){
+                	$(this).removeAttr("selected");
+                });
+             	// 选中
+                $("input[id^='roles_"+index+"_']").each(function(){
+                	var roleId = $(this).val();
+                	$("#rolesSelect option[value='"+roleId+"']").attr("selected", true);
+                }); 
+
+                $("#new-account").modal("show");
+            });
+            
+            $('.delete_account').click(function () {
+            	var index = $(this).attr("id");
+                $.confirm({
+                    theme: 'black',
+                    title: '确认',
+                    content: '<h2>您确定要删除吗？<h2>',
+                    confirmButton: '确定',
+                    cancelButton: '取消',
+                    confirm: function(){
+                        index = index.replace("deleteAccount_", "");
+                    	var url = "../m99/deleteAccount/" + $("#id_"+index).val();
+                    	location.href = url;
+                    },
+                    cancel: function(){
+                        
+                    }
+                });
+            });
+
+        })
+    /*]]>*/
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="wrap">
+            <div>
+                <div>
+                    <div class="page-header">
+                    	<h1 class="text-center">账户管理</h1>                        
+                    </div>
+                    <div>
+                        <div align="right">
+                            <a class="new_account" href="javascript:;">[新建]</a>&nbsp;&nbsp;
+                            <a href="javascript:;" th:href="@{/admin}">[返回后台管理主菜单]</a>
+                        </div>
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th align="center" width="10%">ID</th>
+                                    <th align="center" width="10%">用户名</th>
+                                    <th align="center" width="10%">密码</th>
+                                    <th align="center" width="10%">部门</th>
+                                    <th align="center" width="10%">职位</th>
+                                    <th align="center" width="10%">用户状态</th>
+                                    <th align="center" width="15%">电子邮件</th>
+                                    <th align="center" width="10%">登录次数</th>
+                                    <th align="center" width="15%">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="item, itemStat:${accountList}">
+                                    <td align="center" width="10%" th:text="${item.id}">1</td>
+                                    <td align="center" width="10%" th:text="${item.username}">username</td>
+                                    <td align="center" width="10%" th:text="${item.password}">password</td>
+                                    <td align="center" width="10%" th:text="${depts[item.dept]}">业务一部</td>
+                                    <td align="center" width="10%" th:text="${positions[item.position]}">Sales</td>
+                                    <td align="center" width="10%" th:text="${item.state=='locked'?'锁定':'可用'}">可用</td>
+                                    <td align="center" width="20%" th:text="${item.email}">2015-01-01 23:59：43</td>
+                                    <td align="center" width="10%" th:text="${item.logonCount}">5</td>
+                                    <td align="center" width="20%">
+                                        <input type="hidden" th:id="${'id_' + itemStat.index}" th:value="${item.id}" />
+                                        <input type="hidden" th:id="${'username_' + itemStat.index}" th:value="${item.username}" />
+                                        <input type="hidden" th:id="${'dept_' + itemStat.index}" th:value="${item.dept}" />
+                                        <input type="hidden" th:id="${'position_' + itemStat.index}" th:value="${item.position}" />
+                                        <input type="hidden" th:id="${'password_' + itemStat.index}" th:value="${item.password}" />
+                                        <input type="hidden" th:id="${'state_' + itemStat.index}" th:value="${item.state}" />
+                                        <input type="hidden" th:id="${'email_' + itemStat.index}" th:value="${item.email}" />
+                                        <input type="hidden" th:id="${'logonCount_' + itemStat.index}" th:value="${item.logonCount}" />
+                                        <input th:each="role,roleStat:${item.roleSet}" type="hidden" th:id="${'roles_' + itemStat.index + '_' + roleStat.index}" th:value="${role.id}" />
+                                        <a id="editAccount_0" th:id="${'editAccount_' + itemStat.index}" class="edit_account" href="javascript:;">编辑</a>|
+                                        <a id="deleteAccount_0" th:id="${'deleteAccount_' + itemStat.index}" class="delete_account" href="javascript:;">删除</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <!-- account window-->
+	<div class="modal fade" id="new-account" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	    <div class="modal-dialog modal-lg">
+	        <div class="modal-content">
+	        <form class="form-horizontal" action="#" th:action="@{/m99/saveAccount}" th:object="${accountViewDTO}" method="post">
+	            <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+	                <h4 class="modal-title" id="new-hzss-label">新建/编辑</h4>
+	            </div>
+	            <div class="panel-body">
+	                <table class="table table-bordered border-green">
+	                    <tbody>
+	                    <tr>
+	                       <td>ID</td>
+	                       <td><input id="edit_id" type="text" class="form-control" th:field="*{account.id}" placeholder="自动" readonly="readonly"/></td>
+	                    </tr>
+	                    <tr>
+	                        <td>用户名</td>
+	                        <td><input id="edit_username" type="text" class="form-control" th:field="*{account.username}" required="required"></input></td>
+	                    </tr>
+	                    <tr>
+	                        <td>密码</td>
+	                        <td><input id="edit_password" type="text" class="form-control" th:field="*{account.password}" required="required"></input></td>
+	                    </tr>
+	                    <tr>
+	                        <td>部门</td>
+	                        <td>
+	                        	<select id="edit_dept" class="form-control" th:field="*{account.dept}">
+	                        		<option value="">--请选择--</option>
+	                        		<option th:each="item:${depts}" th:value="${item.key}" th:text="${item.value}">总经理办公室</option>
+	                        	</select>
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <td>职位</td>
+	                        <td>
+	                        	<select id="edit_position" class="form-control" th:field="*{account.position}">
+	                        		<option value="">--请选择--</option>
+	                        		<option th:each="item:${positions}" th:value="${item.key}" th:text="${item.value}">销售</option>
+	                        	</select>
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <td>状态</td>
+	                        <td>
+	                        	<select id="edit_state" class="form-control" th:field="*{account.state}">
+	                        		<option value="active">可用</option>
+	                        		<option value="locked">锁定</option>
+	                        	</select>
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <td>电子邮件</td>
+	                        <td><input id="edit_email" type="text" class="form-control" th:field="*{account.email}" required="required"></input></td>
+	                    </tr>
+	                    <tr>
+	                        <td>登录次数</td>
+	                        <td><input id="edit_logonCount" type="text" class="form-control" th:field="*{account.logonCount}"></input></td>
+	                    </tr>
+	                    <tr>
+	                        <td>关联角色(请选择)</td>
+	                        <td>
+	                        	<select id="rolesSelect" name="roles" class="form-control" multiple="multiple">
+	                        		<option value="">ROLE_ANONYMOUSLY</option>
+                                    <option th:each="bean:${roleList}" th:value="${bean.id}" th:text="${bean.name}">Option 1</option>
+                                </select>
+	                        </td>
+	                    </tr>
+	                    </tbody>
+	                </table>
+	            </div>
+	            <div class="modal-footer">
+	                <button type="button" class="btn default" data-dismiss="modal">取消</button>
+	                <button type="submit" class="btn blue" id="addBtn">提交</button>
+	
+	            </div>
+	        </form>
+	        </div>
+	        <!-- /.modal-content -->
+	    </div>
+	    <!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+    
+</body>
+</html>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:security="http://www.springframework.org/schema/security"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+            http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+            http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context-3.0.xsd
+            http://www.springframework.org/schema/security 
+            http://www.springframework.org/schema/security/spring-security-4.0.xsd">
+
+    <!-- 启用方法调用权限控制注解 -->
+    <security:global-method-security pre-post-annotations="enabled" />  
+
+    <!-- 该路径下的资源不用过滤 -->  
+    <security:http pattern="/js/**" security="none"/>
+    <security:http pattern="/css/**" security="none"/>
+    <security:http pattern="/img/**" security="none"/>
+    <security:http pattern="/assets/**" security="none"/>
+    <security:http pattern="/media/**" security="none"/>
+
+    <!-- 安全过滤器链配置 -->
+    <security:http entry-point-ref="loginEntryPoint" >  
+        <!-- 启用跨站请求伪造攻击保护 -->
+        <security:csrf/>
+        <!-- 替换默认的LogoutFilter -->
+        <security:custom-filter ref="customLogoutFilter" position="LOGOUT_FILTER" />
+        <!-- 替换默认的LoginFilter -->
+        <security:custom-filter ref="customLoginFilter" position="FORM_LOGIN_FILTER" />
+        <!-- 替换默认的自动登陆过滤器 -->
+        <security:custom-filter ref="customRememberMeFilter" position="REMEMBER_ME_FILTER"/>
+        <!-- 尝试访问没有权限的页面时跳转的页面 -->
+        <!-- 替换默认的FilterSecurityInterceptor -->
+        <security:custom-filter ref="filterSecurityInterceptor" before="FILTER_SECURITY_INTERCEPTOR" />
+        <security:access-denied-handler />
+        <!-- 检测失效的sessionId,session超时时，定位到另外一个URL -->
+        <!-- <security:session-management invalid-session-url="/forbidden"/> -->
+    </security:http>
+    
+    <!-- 自定义自动登陆过滤器 -->
+    <bean id="customRememberMeFilter" class="cn.superfw.application.springsecutity.CustomRememberMeFilter">
+        <constructor-arg name="authenticationManager" ref="myAuthenticationManager" />
+        <constructor-arg name="rememberMeServices" ref="rememberMeServices" />
+    </bean>
+    
+    <!-- 自动登录认证提供者 , key值必须要和 rememberMeServices的key值一致 -->
+    <bean id="rememberMeAuthenticationProvider" class="org.springframework.security.authentication.RememberMeAuthenticationProvider">
+        <constructor-arg name="key" value="myAppKey"/>
+    </bean>
+    
+    <!-- 基于加密令牌的RememberMe服务 -->
+    <bean id="rememberMeServices" class="org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices">
+	    <!-- Token加密键(秘钥) -->
+	    <constructor-arg name="key" value="myAppKey" />
+	    <!-- 获取用户详细信息服务 -->
+	    <constructor-arg name="userDetailsService" ref="customUserDetailService"/>
+	    <!-- Token有效时间：60*60*24*10=864000(秒) (10天) -->
+	    <property name="tokenValiditySeconds" value="864000"/>
+	    <!-- 浏览器端保存 Token 的 Cookie 名字 -->
+	    <property name="cookieName" value="SPRING_RM"/>
+    </bean>
+    
+    <!-- 登录画面切入点，替换默认的LoginEntryPoint -->
+    <bean id="loginEntryPoint" class="cn.superfw.application.springsecutity.CustomLoginEntryPoint">
+         <!-- 默认登录页的url -->
+         <constructor-arg value="/" />
+    </bean>
+    
+    <!-- 自定义登录过滤器 -->
+    <bean id="customLoginFilter" class="cn.superfw.application.springsecutity.CustomLoginFilter">
+        <!-- Login-Form的action对应的URL,是一个虚拟URL,不需要再Controler里定义 -->
+        <property name="filterProcessesUrl" value="/j_spring_security_check" />
+        <!-- 认证管理器 -->
+        <property name="authenticationManager" ref="myAuthenticationManager" />
+        <!-- 自定义用户名参数名称 -->
+        <property name="usernameParameter" value="username" />
+        <!-- 自定义密码参数名称 -->
+        <property name="passwordParameter" value="password" />
+        <!-- 注意：Remember-Me 必须结合登录认证功能使用才会生效，所以此处必须注入！ -->
+        <property name="rememberMeServices" ref="rememberMeServices" />
+        <!-- 登录成功后处理器 -->
+        <property name="authenticationSuccessHandler">
+            <!-- 自定义登录成功后的处理handler -->
+            <bean class="cn.superfw.application.springsecutity.CustomLoginHandler">
+                <!-- 登录成功后的默认url,需要在Controler里定义 -->
+                <property name="defaultTargetUrl" value="/home" />
+            </bean>
+        </property>
+        <!-- 登录失败后处理器 -->
+        <property name="authenticationFailureHandler">
+            <bean class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+                <!-- 登录失败后的默认Url,需要在Controler里定义 -->
+                <property name="defaultFailureUrl" value="/?error" />
+            </bean>
+        </property>
+    </bean>
+ 
+    <!-- 自定义注销过滤器 -->
+    <bean id="customLogoutFilter" class="cn.superfw.application.springsecutity.CustomLogoutFilter">
+        <!-- 处理退出的虚拟url,不需要在Controler里定义 -->
+        <property name="filterProcessesUrl" value="/j_spring_security_logout" />
+        <!-- 退出处理成功后的默认显示url,需要在Controler里定义 -->
+        <constructor-arg index="0" value="/" />
+        <constructor-arg index="1">
+            <!-- 退出成功后的handler列表 -->
+            <array>
+                <bean id="securityContextLogoutHandler"
+                    class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler" />
+                <!-- 加入了开发人员自定义的退出成功处理 -->
+                <bean id="customLogoutSuccessHandler" class="cn.superfw.application.springsecutity.CustomLogoutHandler" />
+            </array>
+        </constructor-arg>
+    </bean>
+
+    <!-- 过滤器安全拦截器 -->
+    <bean id="filterSecurityInterceptor" class="org.springframework.security.web.access.intercept.FilterSecurityInterceptor">
+        <!-- 用户拥有的权限 -->  
+        <property name="authenticationManager" ref="myAuthenticationManager" />  
+        <!-- 用户是否拥有所请求资源的权限 -->  
+        <property name="accessDecisionManager" ref="myAccessDecisionManager" />  
+        <!-- 资源与权限对应关系 -->  
+        <property name="securityMetadataSource" ref="mySecurityMetadataSource" />  
+    </bean>
+
+    <!-- 认证管理器 --> 
+    <security:authentication-manager alias="myAuthenticationManager" erase-credentials="false">
+        <security:authentication-provider ref="customProvider" />
+        <security:authentication-provider ref="rememberMeAuthenticationProvider" />
+    </security:authentication-manager>
+
+    <!-- 自定义认证提供者 -->
+    <bean id="customProvider" class="cn.superfw.application.springsecutity.CustomAuthenticationProvider" />
+    <!-- 自定义获取用户详细信息服务 -->
+    <bean id="customUserDetailService" class="cn.superfw.application.springsecutity.CustomUserDetailService" />
+    
+    <!-- 自定义访问决策管理器 -->  
+    <bean id="myAccessDecisionManager"  
+        class="cn.superfw.application.springsecutity.MyAccessDecisionManager">  
+    </bean>
+    
+    <!-- 自定义安全元数据源(系统运行时加载 系统要拦截的资源,与用户请求时要过滤的资源 )-->  
+    <bean id="mySecurityMetadataSource"  
+        class="cn.superfw.application.springsecutity.MySecurityMetadataSource">
+        <constructor-arg name="resourceDAO" ref="resourceDAO" />
+    </bean>
+  
+    <!-- 用户的密码加密或解密 -->  
+    <bean id="passwordEncoder"  
+        class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" />
+</beans>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<beans xmlns="http://www.springframework.org/schema/beans"  
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+       xsi:schemaLocation="http://www.springframework.org/schema/beans  
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+    
+    <bean id="mailSender" class="cn.superfw.framework.spring.JavaMailSenderImplEx" scope="singleton">  
+        <!-- <property name="host" value="wxmail.zyxel.cn" />  
+        <property name="port" value="25" />  
+        <property name="username" value="spm" />  
+        <property name="password" value="ZyXEL12345" />  
+        <property name="javaMailProperties">  
+            <props>
+                <prop key="mail.transport.protocol">smtp</prop>
+                <prop key="mail.smtp.auth">false</prop>
+                <prop key="mail.smtp.ehlo">true</prop>
+                <prop key="mail.smtp.auth.mechanisms">NTLM</prop>
+                <prop key="mail.smtp.auth.ntlm.domain">zyxel</prop>
+                <prop key="mail.debug">true</prop>
+            </props>  
+        </property>  -->
+        <property name="host" value="smtp.sina.cn" />  
+        <property name="port" value="25" />  
+        <property name="username" value="tewoo_a@sina.com.cn" />  
+        <property name="password" value="tewoo_a" />  
+        <property name="javaMailProperties">  
+            <props>  
+                <prop key="mail.smtp.auth">true</prop>  
+            </props>  
+        </property> 
+    </bean> 
+</beans>

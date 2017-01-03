@@ -1,0 +1,28 @@
+/***
+Import fonts
+***/
+
+@page {
+  size: A4 portrait;
+}
+
+@page :left {
+  margin-left: 1cm;
+}
+@page :right {
+  margin-left: 1cm;
+}
+
+.break_before { page-break-before: always; }
+.break_after { page-break-after: always; }
+
+.print {
+	font-family: courier new;
+}
+
+table{ border-collapse:collapse; font-size: 9px; }
+
+th {height:25px; border:1px solid #000; font-size: 9px;}
+
+td {height:25px; border:1px solid #000; font-size: 9px;}
+

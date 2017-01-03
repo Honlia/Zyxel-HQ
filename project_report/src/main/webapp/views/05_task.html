@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
+<!--[if !IE]><!--> <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"> <!--<![endif]-->
+<!-- BEGIN HEAD -->
+<head>
+    <meta charset="utf-8" />
+    <title>首页-个人任务一览</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="description" />
+    <meta content="" name="author" />
+    <!-- BEGIN GLOBAL MANDATORY STYLES -->    <meta http-equiv="pragma" content="no-cache" />      <meta http-equiv="cache-control" content="no-cache, must-revalidate" />      <meta http-equiv="expires" content="0" />         <!-- BEGIN GLOBAL MANDATORY STYLES -->    <link href="media/css/bootstrap.min.css" th:href="@{/media/css/bootstrap.min.css}" rel="stylesheet" type="text/css"/>    <link href="media/css/bootstrap-responsive.min.css" th:href="@{/media/css/bootstrap-responsive.min.css}" rel="stylesheet" type="text/css"/>    <link href="media/css/font-awesome.min.css" th:href="@{/media/css/font-awesome.min.css}" rel="stylesheet" type="text/css"/>    <link href="media/css/style-metro.css" th:href="@{/media/css/style-metro.css}" rel="stylesheet" type="text/css"/>    <link href="media/css/style.css" th:href="@{/media/css/style.css}" rel="stylesheet" type="text/css"/>    <link href="media/css/style-responsive.css" th:href="@{/media/css/style-responsive.css}" rel="stylesheet" type="text/css"/>    <link href="media/css/default.css" th:href="@{/media/css/default.css}" rel="stylesheet" type="text/css" id="style_color"/>    <link href="media/css/uniform.default.css" th:href="@{/media/css/uniform.default.css}" rel="stylesheet" type="text/css"/>    <!-- END GLOBAL MANDATORY STYLES -->    <link rel="shortcut icon" href="media/image/favicon.ico" th:href="@{/media/image/favicon.ico}" />
+</head>
+<!-- END HEAD -->
+<!-- BEGIN BODY -->
+<body class="page-header-fixed">
+    <!-- BEGIN HEADER -->
+    <div th:replace="00_header :: page-header-top"></div>
+    <!-- END HEADER -->
+    <!-- BEGIN CONTAINER -->   
+    <div class="page-container row-fluid">
+        <!-- BEGIN SIDEBAR -->
+        <div th:replace="00_sidebar :: page-sidebar"></div>
+        <!-- END SIDEBAR -->
+        <!-- BEGIN PAGE -->
+        <div class="page-content">
+            <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+            <div id="portlet-config" class="modal hide">
+                <div class="modal-header">
+                    <button data-dismiss="modal" class="close" type="button"></button>
+                    <h3>portlet Settings</h3>
+                </div>
+                <div class="modal-body">
+                    <p>Here will be a configuration form</p>
+                </div>
+            </div>
+            <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+            <!-- BEGIN PAGE CONTAINER-->
+            <div class="container-fluid">
+                <!-- BEGIN PAGE HEADER-->
+                <div class="row-fluid">
+                    <div class="span12">
+                        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+                        <h3 class="page-title">
+                            待处理任务一览 <small></small>
+                        </h3>
+                        <!-- <ul class="breadcrumb">
+                            <li>
+                                <i class="icon-home"></i>
+                                <a href="05_task.html">首页</a> 
+                            </li>
+                        </ul> -->
+                        <!-- END PAGE TITLE & BREADCRUMB-->
+                    </div>
+                </div>
+                <!-- END PAGE HEADER-->
+                <!-- BEGIN PAGE CONTENT-->                <div class="row-fluid">                                    <div class="span12">                                        <div class="portlet box green">                            <div class="portlet-title">                                <div class="caption"><i class="icon-tasks"></i>待处理任务一览</div>                                <div class="tools">                                    <a href="javascript:;" class="collapse"></a>                                </div>                            </div>                            <div class="portlet-body">                                <table class="table table-condensed table-hover">                                    <thead>                                        <tr>                                            <th>No.</th>
+                                            <th>项目编号</th>
+                                            <th>项目名称</th>
+                                            <th>流程名</th>
+                                            <th>流程编号</th>
+                                            <th>任务名</th>
+                                            <th>任务开始时间</th>                                            <th>流程申请人</th>                                            <th>申请时间</th>                                            <th>状态</th>                                        </tr>                                    </thead>                                    <tbody>                                        <tr th:each="row,rowStat:${todoTasks}">                                            <td><span class="help-inline" th:text="${rowStat.index + 1}">1</span></td>
+                                            <td><a href="04_detailReport.html" th:href="@{/editReport/{businessKey}(instanceId=${row.instanceId},taskId=${row.taskId},businessKey=${row.businessKey})}" th:text="${row.projectNumber}">PM0000000001</a></td>
+                                            <td th:text="${row.projectName}">测试机销售</td>
+                                            <td th:text="${row.processDefinitionName}">流程名</td>
+                                            <td th:text="${row.instanceId}">流程编号</td>
+                                            <td th:text="${row.taskName}">任务名</td>
+                                            <td th:text="${#dates.format(row.taskStartTime, 'yyyy/MM/dd HH:mm:ss')}">2015-12-12 12:59:34</td>                                            <td th:text="${row.applyUser}">张三</td>                                            <td th:text="${row.applyTime}">2015-12-12</td>                                            <td>
+                                                <span class="label label-info" th:if="${row.status=='A1' or row.status=='B1' or row.status=='C1' or row.status=='D1'}" th:text="${statusNames[row.status]}">申请</span>
+                                                <span class="label label-success" th:if="${row.status=='B2' or row.status=='C2' or row.status=='D2' or row.status=='D3' or row.status=='E1' or row.status=='E2'}" th:text="${statusNames[row.status]}">同意</span>
+                                                <span class="label label-warning" th:if="${row.status=='B3' or row.status=='C3' or row.status=='D4' or row.status=='D5' or row.status=='D6'}" th:text="${statusNames[row.status]}">驳回</span>
+                                            </td>                                        </tr>                                        <tr th:remove="all">                                            <td>2</td>                                            <td><a href="04_detailReport .html">PM0000000002</a></td>                                            <td>测试机销售</td>                                            <td>张三</td>                                            <td>2015-12-12</td>                                            <td><span class="label label-success">确认库存及交期</span></td>                                        </tr>                                        <tr th:remove="all">                                            <td>3</td>                                            <td><a href="04_detailReport .html">PM0000000003</a></td>                                            <td>测试机销售</td>                                            <td>张三</td>                                            <td>2015-12-12</td>                                            <td><span class="label label-warning">特价申请</span></td>                                        </tr>                                    </tbody>                                </table>                            </div>                        </div>                    </div>                                </div>
+                <!-- END PAGE CONTENT-->
+            </div>
+            <!-- END PAGE CONTAINER--> 
+        </div>
+        <!-- END PAGE -->    
+    </div>
+    <!-- END CONTAINER -->
+    <!-- BEGIN FOOTER -->
+    <div th:replace="00_footer :: page-footer"></div>
+    <!-- END FOOTER -->
+    <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->    <!-- BEGIN CORE PLUGINS -->    <script src="media/js/jquery-1.10.1.min.js" th:src="@{/media/js/jquery-1.10.1.min.js}" type="text/javascript"></script>    <script src="media/js/jquery-migrate-1.2.1.min.js" th:src="@{/media/js/jquery-migrate-1.2.1.min.js}" type="text/javascript"></script>    <!-- IMPORTANT! Load jquery-ui-1.10.1.custom.min.js before bootstrap.min.js to fix bootstrap tooltip conflict with jquery ui tooltip -->    <script src="media/js/jquery-ui-1.10.1.custom.min.js" th:src="@{/media/js/jquery-ui-1.10.1.custom.min.js}" type="text/javascript"></script>          <script src="media/js/bootstrap.min.js" th:src="@{/media/js/bootstrap.min.js}" type="text/javascript"></script>    <!--[if lt IE 9]>    <script src="media/js/excanvas.min.js" th:src="@{/media/js/excanvas.min.js}"></script>    <script src="media/js/respond.min.js" th:src="@{/media/js/respond.min.js}"></script>      <![endif]-->       <script src="media/js/jquery.slimscroll.min.js" th:src="@{/media/js/jquery.slimscroll.min.js}" type="text/javascript"></script>    <script src="media/js/jquery.blockui.min.js" th:src="@{/media/js/jquery.blockui.min.js}" type="text/javascript"></script>      <script src="media/js/jquery.cookie.min.js" th:src="@{/media/js/jquery.cookie.min.js}" type="text/javascript"></script>    <script src="media/js/jquery.uniform.min.js" th:src="@{/media/js/jquery.uniform.min.js}" type="text/javascript" ></script>    <!-- END CORE PLUGINS -->    <!-- BEGIN PAGE LEVEL PLUGINS -->    <script type="text/javascript" src="media/js/ckeditor.js" th:src="@{/media/js/ckeditor.js}"></script>      <script type="text/javascript" src="media/js/bootstrap-fileupload.js" th:src="@{/media/js/bootstrap-fileupload.js}"></script>    <script type="text/javascript" src="media/js/chosen.jquery.min.js" th:src="@{/media/js/chosen.jquery.min.js}"></script>    <script type="text/javascript" src="media/js/select2.min.js" th:src="@{/media/js/select2.min.js}"></script>    <script type="text/javascript" src="media/js/wysihtml5-0.3.0.js" th:src="@{/media/js/wysihtml5-0.3.0.js}"></script>     <script type="text/javascript" src="media/js/bootstrap-wysihtml5.js" th:src="@{/media/js/bootstrap-wysihtml5.js}"></script>    <script type="text/javascript" src="media/js/jquery.tagsinput.min.js" th:src="@{/media/js/jquery.tagsinput.min.js}"></script>    <script type="text/javascript" src="media/js/jquery.toggle.buttons.js" th:src="@{/media/js/jquery.toggle.buttons.js}"></script>    <script type="text/javascript" src="media/js/bootstrap-datepicker.js" th:src="@{/media/js/bootstrap-datepicker.js}"></script>    <script type="text/javascript" src="media/js/bootstrap-datetimepicker.js" th:src="@{/media/js/bootstrap-datetimepicker.js}"></script>    <script type="text/javascript" src="media/js/clockface.js" th:src="@{/media/js/clockface.js}"></script>    <script type="text/javascript" src="media/js/date.js" th:src="@{/media/js/date.js}"></script>    <script type="text/javascript" src="media/js/daterangepicker.js" th:src="@{/media/js/daterangepicker.js}"></script>     <script type="text/javascript" src="media/js/bootstrap-colorpicker.js" th:src="@{/media/js/bootstrap-colorpicker.js}"></script>      <script type="text/javascript" src="media/js/bootstrap-timepicker.js" th:src="@{/media/js/bootstrap-timepicker.js}"></script>    <script type="text/javascript" src="media/js/jquery.inputmask.bundle.min.js" th:src="@{/media/js/jquery.inputmask.bundle.min.js}"></script>       <script type="text/javascript" src="media/js/jquery.input-ip-address-control-1.0.min.js" th:src="@{/media/js/jquery.input-ip-address-control-1.0.min.js}"></script>    <script type="text/javascript" src="media/js/jquery.multi-select.js" th:src="@{/media/js/jquery.multi-select.js}"></script>       <script src="media/js/bootstrap-modal.js" th:src="@{/media/js/bootstrap-modal.js}" type="text/javascript" ></script>    <script src="media/js/bootstrap-modalmanager.js" th:src="@{/media/js/bootstrap-modalmanager.js}" type="text/javascript" ></script>    <!-- END PAGE LEVEL PLUGINS -->    <!-- BEGIN PAGE LEVEL SCRIPTS -->    <script src="media/js/app.js" th:src="@{/media/js/app.js}"></script>    <script src="media/js/form-components.js" th:src="@{/media/js/form-components.js}"></script>    <script src="media/js/table-editable.js" th:src="@{/media/js/table-editable.js}"></script>        <!-- END PAGE LEVEL SCRIPTS -->    <script type="text/javascript" th:inline="javascript">    /*<![CDATA[*/        jQuery(document).ready(function() {               App.init();        });    /*]]>*/    </script>    <!-- END JAVASCRIPTS -->
+<script type="text/javascript">  var _gaq = _gaq || [];  _gaq.push(['_setAccount', 'UA-37564768-1']);  _gaq.push(['_setDomainName', 'keenthemes.com']);  _gaq.push(['_setAllowLinker', true]);  _gaq.push(['_trackPageview']);  (function() {    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;    ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);  })();</script></body>
+<!-- END BODY -->
+</html>

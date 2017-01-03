@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <!-- BEGIN HEADER TOP -->
+        <div th:fragment="page-header-top">
+            <div class="header navbar navbar-inverse navbar-fixed-top">
+                <!-- BEGIN TOP NAVIGATION BAR -->
+                <div class="navbar-inner">
+                    <div class="container-fluid">
+                        <!-- BEGIN LOGO -->
+                        <a class="brand" href="05_task.html" th:href="@{/home}">
+                            <img src="media/image/logo.png" th:src="@{/media/image/logo.jpg}" alt="" /> 
+                        </a>
+                        <!-- END LOGO -->
+                        <!-- BEGIN RESPONSIVE MENU TOGGLER -->
+                        <a href="javascript:;" class="btn-navbar collapsed" data-toggle="collapse" data-target=".nav-collapse">
+                        <img src="media/image/menu-toggler.png" th:src="@{/media/image/menu-toggler.png}" alt="" />
+                        </a>          
+                        <!-- END RESPONSIVE MENU TOGGLER -->            
+                        <!-- BEGIN TOP NAVIGATION MENU -->              
+                        <ul class="nav pull-right">
+                            <!-- BEGIN USER LOGIN DROPDOWN -->
+                            <li class="dropdown user">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <span class="username" th:text="${session.uvo.username}">周黑鸭</span>
+                                <i class="icon-angle-down"></i>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="01_login.html" th:href="@{/j_spring_security_logout}"><i class="icon-key"></i> 安全退出</a></li>
+                                </ul>
+                            </li>
+                            <!-- END USER LOGIN DROPDOWN -->
+                        </ul>
+                        <!-- END TOP NAVIGATION MENU --> 
+                    </div>
+                </div>
+                <!-- END TOP NAVIGATION BAR -->
+            </div>
+        </div>
+        <!-- END HEADER TOP -->
+    </body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <!-- BEGIN HEADER TOP -->
+        <div th:fragment="page-sidebar">
+            <div class="page-sidebar nav-collapse collapse">
+	            <!-- BEGIN SIDEBAR MENU -->        
+	            <ul class="page-sidebar-menu">
+	                <li>
+	                    <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+	                    <div class="sidebar-toggler hidden-phone"></div>
+	                    <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+	                </li>
+	                <li><br/>
+	                    <!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
+	                    <!-- <form class="sidebar-search">
+	                        <div class="input-box">
+	                            <a href="javascript:;" class="remove"></a>
+	                            <input type="text" placeholder="检索..." />
+	                            <input type="button" class="submit" value=" " />
+	                        </div>
+	                    </form> -->
+	                    <!-- END RESPONSIVE QUICK SEARCH FORM -->
+	                </li>
+	                <li class="start">
+	                    <a href="05_task.html" th:href="@{/todoTasks}">
+	                    <i class="icon-home"></i> 
+	                    <span class="title">首页</span>
+	                    </a>
+	                </li>
+	                <li class="">
+	                    <a href="javascript:;">
+	                    <i class="icon-cogs"></i> 
+	                    <span class="title">项目报备管理</span>
+	                    <span class="selected"></span>
+	                    <span class="arrow open"></span>
+	                    </a>
+	                    <ul class="sub-menu">
+	                        <li th:if="${session.uvo != null and (session.uvo.position == '1' or session.uvo.position == '3')}">
+	                            <a href="02_newReport.html" th:href="@{/newReport}"><span class="icon-plus" style="margin-right: 10px;"></span>新建报备项目</a>
+	                        </li>
+	                        <li>
+	                            <a href="03_viewReport.html" th:href="@{/searchReport}"><span class="icon-search" style="margin-right: 10px;"></span>项目报备查看</a>
+	                        </li>
+	                    </ul>
+	                </li>
+	                
+	                <li class="">
+                        <a href="javascript:;">
+                        <i class="icon-user"></i> 
+                        <span class="title">安全管理</span>
+                        <span class="selected"></span>
+                        <span class="arrow open"></span>
+                        </a>
+                        <ul class="sub-menu">
+                            <li>
+                                <a href="#" th:href="@{/changePwd}"><span class="icon-key" style="margin-right: 10px;"></span>修改密码</a>
+                            </li>
+                        </ul>
+                    </li>
+	                
+	                <li th:if="${session.uvo != null and (session.uvo.username == 'admin' or session.uvo.position == '21')}">
+                    <a href="javascript:;">
+	                    <i class="icon-wrench"></i> 
+	                    <span class="title">后台管理</span>
+	                    <span class="selected"></span>
+	                    <span class="arrow open"></span>
+                    </a>
+
+                    <ul class="sub-menu">
+                        <li th:if="${session.uvo != null and (session.uvo.username == 'admin')}">
+                            <a th:href="@{/m99/initManageProduct}"><span class="icon-shopping-cart" style="margin-right: 10px;"></span>产品管理</a>
+                        </li>
+                        <li th:if="${session.uvo != null and (session.uvo.username == 'admin' or session.uvo.position == '21')}">
+                            <a th:href="@{/m99/initManageAgent}"><span class="icon-truck" style="margin-right: 10px;"></span>代理商管理</a>
+                        </li>
+                    </ul>
+                </li>
+	            </ul>
+	            <!-- END SIDEBAR MENU -->
+	        </div>
+        </div>
+        <!-- END HEADER TOP -->
+    </body>
+</html>
